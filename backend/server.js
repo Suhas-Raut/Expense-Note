@@ -13,7 +13,7 @@ if (fs.existsSync(secretPath)) {
   // fallback to local .env for development
   require("dotenv").config();
 }
-
+console.log("MONGO_URI:", process.env.MONGO_URI);
 const app = express();
 
 /* 🔥 MIDDLEWARE — MUST BE BEFORE ROUTES */
