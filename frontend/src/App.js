@@ -63,6 +63,11 @@ function App() {
     datasets: [
       {
         data: Object.values(expenseTotals),
+        backgroundColor: [
+          "#F87171", "#FB923C", "#FACC15",
+          "#4ADE80", "#2DD4BF", "#60A5FA",
+          "#A78BFA", "#F472B6"
+        ],
         borderWidth: 0
       }
     ]
@@ -73,25 +78,23 @@ function App() {
       <h1>💰 Expense & Income Tracker</h1>
 
       {/* SUMMARY CARDS */}
-      <div className="grid">
-        <div className="card">
+      <div className="grid summary">
+        <div className="card total-income">
           <h3>Total Income</h3>
-          <h2 style={{ color: "#22c55e" }}>₹{totalIncome}</h2>
+          <h2>₹{totalIncome}</h2>
         </div>
-        <div className="card">
+        <div className="card total-expense">
           <h3>Total Expense</h3>
-          <h2 style={{ color: "#ef4444" }}>₹{totalExpense}</h2>
+          <h2>₹{totalExpense}</h2>
         </div>
-        <div className="card">
+        <div className="card balance">
           <h3>Balance</h3>
-          <h2 style={{ color: balance >= 0 ? "#22c55e" : "#ef4444" }}>
-            ₹{balance}
-          </h2>
+          <h2>₹{balance}</h2>
         </div>
       </div>
 
       {/* ADD FORM */}
-      <form className="card" onSubmit={addTransaction}>
+      <form className="card form" onSubmit={addTransaction}>
         <select value={type} onChange={(e) => setType(e.target.value)}>
           <option value="expense">Expense</option>
           <option value="income">Income</option>
@@ -123,29 +126,16 @@ function App() {
         </button>
       </form>
 
-      {/* LIST + CHART */}
-      <div className="grid">
+      {/* LIST + CHART SIDE BY SIDE */}
+      <div className="grid transactions-chart">
         <div className="card list">
           <h3>All Transactions</h3>
-
           {transactions.map((t) => (
             <div key={t._id} className="row">
-              <span>
-                <strong
-                  style={{
-                    color: t.type === "income" ? "#22c55e" : "#ef4444"
-                  }}
-                >
-                  {t.type.toUpperCase()}
-                </strong>
-              </span>
-
+              <span className={t.type}>{t.type.toUpperCase()}</span>
               <span>{t.title}</span>
-
               <span>₹{t.amount}</span>
-
               <span className="cat">{t.category}</span>
-
               <FaTrash onClick={() => deleteTransaction(t._id)} />
             </div>
           ))}

@@ -1,3 +1,4 @@
+// transactions.js
 const express = require("express");
 const router = express.Router();
 const Transaction = require("../models/Transaction");
@@ -18,6 +19,16 @@ router.post("/", async (req, res) => {
     res.json(transaction);
   } catch (e) {
     res.status(500).json({ message: "Server error adding transaction" });
+  }
+});
+
+// ✅ Add DELETE route
+router.delete("/:id", async (req, res) => {
+  try {
+    await Transaction.findByIdAndDelete(req.params.id);
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ message: "Server error deleting transaction" });
   }
 });
 

@@ -1,5 +1,4 @@
 /* -------- GLOBAL -------- */
-
 body {
   margin: 0;
   font-family: "Poppins", system-ui, sans-serif;
@@ -8,52 +7,35 @@ body {
 }
 
 .app {
-  max-width: 900px;
+  max-width: 950px;
   margin: auto;
   padding: 20px;
 }
 
 /* -------- HEADINGS -------- */
-
 h1 {
   text-align: center;
   margin-bottom: 25px;
 }
 
-/* -------- CARDS -------- */
-
-.card {
-  background: rgba(255,255,255,0.1);
-  border-radius: 18px;
-  padding: 18px;
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.2);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
-}
-
-/* -------- SUMMARY GRID -------- */
-
-.grid {
+/* -------- SUMMARY CARDS -------- */
+.grid.summary {
   display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+  margin-bottom: 20px;
 }
 
-.grid:first-of-type {
-  grid-template-columns: repeat(3,1fr);
-}
-
-/* make value stand out */
-.card h2 {
-  margin-top: 8px;
-}
+.card.total-income h2 { color: #22c55e; }
+.card.total-expense h2 { color: #ef4444; }
+.card.balance h2 { color: #22c55e; }
 
 /* -------- FORM -------- */
-
-form.card {
+form.card.form {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 10px;
-  margin-top: 25px;
+  margin-bottom: 25px;
 }
 
 input, select {
@@ -72,13 +54,20 @@ input, select {
   border: none;
   cursor: pointer;
   background: linear-gradient(135deg,#22c55e,#4ade80);
+  font-weight: bold;
+}
+
+/* -------- LIST + CHART SIDE BY SIDE -------- */
+.grid.transactions-chart {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
 /* -------- TRANSACTION LIST -------- */
-
 .list .row {
   display: grid;
-  grid-template-columns: 90px 1fr 90px 120px 30px;
+  grid-template-columns: 80px 1fr 80px 120px 30px;
   align-items: center;
   padding: 10px 12px;
   margin-bottom: 8px;
@@ -91,59 +80,30 @@ input, select {
   background: rgba(255,255,255,0.15);
 }
 
-.cat {
-  opacity: .8;
-  font-size: 0.9em;
-}
+.cat { opacity: .8; font-size: 0.9em; }
+.row .income { color: #22c55e; font-weight: bold; }
+.row .expense { color: #ef4444; font-weight: bold; }
 
-svg {
-  cursor: pointer;
-}
+svg { cursor: pointer; }
 
-/* -------- CHART CARD -------- */
-
+/* -------- CHART -------- */
 .chart {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 16px;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.15);
 }
 
-.chart canvas {
-  max-height: 280px !important;
-}
-
-/* -------- LEGEND TAGS -------- */
-
-.chart ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.chart li {
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.25);
-}
+.chart canvas { max-height: 280px !important; }
 
 /* -------- RESPONSIVE -------- */
-
 @media (max-width: 720px) {
-
-  .grid:first-of-type {
-    grid-template-columns: 1fr;
-  }
-
-  form.card {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .list .row {
-    grid-template-columns: 70px 1fr 70px 100px 30px;
-  }
+  .grid.summary { grid-template-columns: 1fr; }
+  form.card.form { grid-template-columns: 1fr 1fr; }
+  .list .row { grid-template-columns: 70px 1fr 70px 100px 30px; }
+  .grid.transactions-chart { grid-template-columns: 1fr; }
 }
