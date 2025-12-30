@@ -5,47 +5,64 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const API = "http://localhost:5000/api/expenses";
+const API = "http://localhost:5000/api/transactions";
 
 function App() {
-  const [expenses, setExpenses] = useState([]);
+  const [transactions, setTransactions] = useState([]);
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("Food");
+  const [type, setType] = useState("expense");
 
-  const fetchExpenses = async () => {
+  const fetchTransactions = async () => {
     const res = await axios.get(API);
-    setExpenses(res.data);
+    setTransactions(res.data);
   };
 
-  const addExpense = async (e) => {
+  const addTransaction = async (e) => {
     e.preventDefault();
     if (!title || !amount) return;
-    await axios.post(API, { title, amount, category });
+    await axios.post(API, { title, amount: +amount, category, type });
     setTitle("");
     setAmount("");
-    fetchExpenses();
+    setCategory("Food");
+    setType("expense");
+    fetchTransactions();
   };
 
-  const deleteExpense = async (id) => {
+  const deleteTransaction = async (id) => {
     await axios.delete(`${API}/${id}`);
-    fetchExpenses();
+    fetchTransactions();
   };
 
   useEffect(() => {
-    fetchExpenses();
+    fetchTransactions();
   }, []);
 
-  const totals = expenses.reduce((acc, e) => {
-    acc[e.category] = (acc[e.category] || 0) + e.amount;
-    return acc;
-  }, {});
+  // ---------- Totals ----------
+  const totalIncome = transactions
+    .filter((t) => t.type === "income")
+    .reduce((s, t) => s + t.amount, 0);
+
+  const totalExpense = transactions
+    .filter((t) => t.type === "expense")
+    .reduce((s, t) => s + t.amount, 0);
+
+  const balance = totalIncome - totalExpense;
+
+  // ---------- Chart (Expense Only) ----------
+  const expenseTotals = transactions
+    .filter((t) => t.type === "expense")
+    .reduce((acc, e) => {
+      acc[e.category] = (acc[e.category] || 0) + e.amount;
+      return acc;
+    }, {});
 
   const chartData = {
-    labels: Object.keys(totals),
+    labels: Object.keys(expenseTotals),
     datasets: [
       {
-        data: Object.values(totals),
+        data: Object.values(expenseTotals),
         borderWidth: 0
       }
     ]
@@ -53,19 +70,44 @@ function App() {
 
   return (
     <div className="app">
-      <h1>💰 Expense Tracker</h1>
+      <h1>💰 Expense & Income Tracker</h1>
 
-      <form className="card" onSubmit={addExpense}>
+      {/* SUMMARY CARDS */}
+      <div className="grid">
+        <div className="card">
+          <h3>Total Income</h3>
+          <h2 style={{ color: "#22c55e" }}>₹{totalIncome}</h2>
+        </div>
+        <div className="card">
+          <h3>Total Expense</h3>
+          <h2 style={{ color: "#ef4444" }}>₹{totalExpense}</h2>
+        </div>
+        <div className="card">
+          <h3>Balance</h3>
+          <h2 style={{ color: balance >= 0 ? "#22c55e" : "#ef4444" }}>
+            ₹{balance}
+          </h2>
+        </div>
+      </div>
+
+      {/* ADD FORM */}
+      <form className="card" onSubmit={addTransaction}>
+        <select value={type} onChange={(e) => setType(e.target.value)}>
+          <option value="expense">Expense</option>
+          <option value="income">Income</option>
+        </select>
+
         <input
-          placeholder="Expense Title"
+          placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+
         <input
           type="number"
           placeholder="Amount ₹"
           value={amount}
-          onChange={(e) => setAmount(+e.target.value)}
+          onChange={(e) => setAmount(e.target.value)}
         />
 
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
@@ -81,22 +123,41 @@ function App() {
         </button>
       </form>
 
+      {/* LIST + CHART */}
       <div className="grid">
         <div className="card list">
-          <h3>Expenses</h3>
-          {expenses.map((e) => (
-            <div key={e._id} className="row">
-              <span>{e.title}</span>
-              <span>₹{e.amount}</span>
-              <span className="cat">{e.category}</span>
-              <FaTrash onClick={() => deleteExpense(e._id)} />
+          <h3>All Transactions</h3>
+
+          {transactions.map((t) => (
+            <div key={t._id} className="row">
+              <span>
+                <strong
+                  style={{
+                    color: t.type === "income" ? "#22c55e" : "#ef4444"
+                  }}
+                >
+                  {t.type.toUpperCase()}
+                </strong>
+              </span>
+
+              <span>{t.title}</span>
+
+              <span>₹{t.amount}</span>
+
+              <span className="cat">{t.category}</span>
+
+              <FaTrash onClick={() => deleteTransaction(t._id)} />
             </div>
           ))}
         </div>
 
         <div className="card chart">
           <h3>Spending Breakdown</h3>
-          <Doughnut data={chartData} />
+          {Object.keys(expenseTotals).length ? (
+            <Doughnut data={chartData} />
+          ) : (
+            <p>No expense data yet</p>
+          )}
         </div>
       </div>
     </div>

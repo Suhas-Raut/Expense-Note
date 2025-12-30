@@ -1,7 +1,9 @@
+/* -------- GLOBAL -------- */
+
 body {
   margin: 0;
-  font-family: system-ui, Arial;
-  background: linear-gradient(135deg, #0f172a, #111827);
+  font-family: "Poppins", system-ui, sans-serif;
+  background: linear-gradient(135deg,#0f172a,#020617);
   color: white;
 }
 
@@ -11,51 +13,137 @@ body {
   padding: 20px;
 }
 
+/* -------- HEADINGS -------- */
+
 h1 {
   text-align: center;
+  margin-bottom: 25px;
 }
+
+/* -------- CARDS -------- */
 
 .card {
+  background: rgba(255,255,255,0.1);
+  border-radius: 18px;
+  padding: 18px;
   backdrop-filter: blur(12px);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 16px;
-  padding: 16px;
-  margin-top: 16px;
-  box-shadow: 0 20px 40px rgba(0,0,0,.2);
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
 }
 
-input, select {
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-}
-
-.add {
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  background: #22c55e;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-}
+/* -------- SUMMARY GRID -------- */
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 20px;
 }
 
-.row {
+.grid:first-of-type {
+  grid-template-columns: repeat(3,1fr);
+}
+
+/* make value stand out */
+.card h2 {
+  margin-top: 8px;
+}
+
+/* -------- FORM -------- */
+
+form.card {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr auto;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 25px;
+}
+
+input, select {
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+  outline: none;
+}
+
+.add {
+  display: flex;
   align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg,#22c55e,#4ade80);
+}
+
+/* -------- TRANSACTION LIST -------- */
+
+.list .row {
+  display: grid;
+  grid-template-columns: 90px 1fr 90px 120px 30px;
+  align-items: center;
+  padding: 10px 12px;
   margin-bottom: 8px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.list .row:hover {
+  background: rgba(255,255,255,0.15);
 }
 
 .cat {
-  opacity: 0.7;
+  opacity: .8;
+  font-size: 0.9em;
+}
+
+svg {
+  cursor: pointer;
+}
+
+/* -------- CHART CARD -------- */
+
+.chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chart canvas {
+  max-height: 280px !important;
+}
+
+/* -------- LEGEND TAGS -------- */
+
+.chart ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chart li {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+/* -------- RESPONSIVE -------- */
+
+@media (max-width: 720px) {
+
+  .grid:first-of-type {
+    grid-template-columns: 1fr;
+  }
+
+  form.card {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .list .row {
+    grid-template-columns: 70px 1fr 70px 100px 30px;
+  }
 }
