@@ -7,10 +7,11 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const API_BASE =
   process.env.NODE_ENV === "production"
-    ? "https://YOUR-BACKEND.onrender.com"
+    ? "https://YOUR-BACKEND-URL.onrender.com"  
     : "http://localhost:5000";
 
 const API = `${API_BASE}/api/transactions`;
+
 
 function App() {
   const [transactions, setTransactions] = useState([]);
