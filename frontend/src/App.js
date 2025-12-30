@@ -5,7 +5,12 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const API = "http://localhost:5000/api/transactions";
+const API_BASE =
+  process.env.NODE_ENV === "production"
+    ? "https://YOUR-BACKEND.onrender.com"
+    : "http://localhost:5000";
+
+const API = `${API_BASE}/api/transactions`;
 
 function App() {
   const [transactions, setTransactions] = useState([]);
