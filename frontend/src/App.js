@@ -5,32 +5,73 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import API_URL from "./api";
 
+ChartJS.register(ArcElement, Tooltip, Legend);
+
 const API = `${API_URL}/api/transactions`;
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+// Predefined titles with emojis for autocomplete
+const expenseTitles = [
+  "🍔 Groceries", "🍕 Pizza", "☕ Coffee", "🍿 Snacks", "🍩 Donuts",
+  "🛍️ Clothes", "👗 Apparel", "👠 Shoes", "💄 Perfume", "👜 Bags",
+  "🚗 Cab", "🚌 Bus", "🚕 Auto", "✈️ Air Ticket", "⛽ Fuel",
+  "🎬 Movies", "🎵 Concert", "🏟️ Sports Event", "🎮 Games", "🎤 Music",
+  "🏠 Rent", "💡 Utilities", "📱 Phone Bill", "💊 Medicines", "🧴 Healthcare",
+  "🐾 Pet Supplies", "🎁 Gifts", "🍷 Party", "🛋️ Home Decor", "🖥️ Electronics",
+  "📝 Stationery", "📚 Books", "🎨 Art Supplies", "🛠️ Repair", "🧰 Tools",
+  "💻 Software", "📦 Online Shopping", "🛒 Supermarket", "🧹 Cleaning", "🛏️ Bedding",
+  "🛀 Spa", "🏋️ Gym", "🪪 Membership", "🚿 Water", "🌐 Internet",
+  "🎓 Education", "💼 Office Supplies", "📷 Photography", "🎟️ Tickets", "🎲 Board Games",
+  "🍔 Burger", "🍕 Pizza", "🥪 Sandwich", "🥗 Salad", "🍣 Sushi", "🍜 Noodles",
+  "🍝 Pasta", "🥟 Momos", "🌮 Taco", "🍩 Donuts", "☕ Coffee", "🍵 Tea", "🧋 Bubble Tea",
+  "🍪 Cookies", "🍫 Chocolate", "🧃 Juice", "🥛 Milkshake", "🍷 Wine", "🍺 Beer",
+  "🛵 Zomato", "📦 Blinkit", "🛒 Swiggy", "🍱 Domino's", "🥡 McDonald's", "🍔 KFC",
+  "🏠 Home Cooked", "🍽️ Restaurant", "☕ Cafe", "🍹 Bar", "🍷 Lounge",
+  "🚗 Cab", "🚕 Auto", "🚌 Bus", "🚖 Ola", "🚘 Uber", "✈️ Flight", "⛽ Fuel", "🚉 Train",
+  "🛍️ Mall", "👗 Clothes", "👠 Shoes", "💄 Perfume", "👜 Bag", "📱 Electronics",
+  "🛋️ Home Decor", "🏠 Furniture", "🧴 Toiletries", "🧹 Cleaning Supplies", "📚 Books",
+  "🎮 Games", "🎨 Art Supplies", "🎁 Gifts", "💊 Medicines",
+  "🧾 Bills", "💡 Electricity", "🌐 Internet", "🏋️ Gym", "🎟️ Tickets", "🛏️ Bedding",
+  "🛀 Spa", "🎓 Education", "🖌️ Design", "📦 Online Shopping",
+  "🛒 Amazon", "🛍️ Flipkart", "👗 Myntra", "🛒 Ajio", "📦 Nykaa", "🛍️ BigBasket",
+  "📺 Netflix", "🎬 Amazon Prime Video", "📺 Hotstar", "🎥 Disney+", "📺 SonyLIV",
+];
+
+const incomeTitles = [
+  "💰 Salary", "🖋️ Freelance", "📈 Investments", "🎁 Gifts", "💸 Bonus",
+  "🏦 Interest", "🏠 Rental Income", "🛒 Cashback", "🪙 Crypto", "🧾 Dividend",
+  "🎨 Art Sale", "🎤 Performance", "💻 Consulting", "📊 Trading", "🚀 Startup Profit",
+  "📝 Writing", "📷 Photography", "🎬 Film Project", "🎮 Gaming", "🛍️ Reselling",
+  "🏆 Prize Money", "🎟️ Ticket Sale", "💳 Refund", "🏝️ Travel Reimbursement", "📚 Teaching",
+  "🎓 Workshop", "🖌️ Design", "📦 eCommerce", "🛠️ Freelance Work", "🎵 Music",
+  "🎮 Stream", "📱 App Revenue", "🏢 Contract Work", "🪄 Magic Show", "🎁 Donations",
+  "🪙 NFT Sale", "🎨 Digital Art", "🏀 Sports Coaching", "🎬 Acting", "🎤 Singing",
+  "📖 Publishing", "🖥️ Software Dev", "🛒 Dropshipping", "🏡 Property Sale", "💼 Part-time Job",
+  "🧩 Miscellaneous"
+];
 
 function App() {
   const [transactions, setTransactions] = useState([]);
   const [title, setTitle] = useState("");
+  const [filteredTitles, setFilteredTitles] = useState([]);
   const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("Food");
+  const [category, setCategory] = useState("🍔 Food");
   const [type, setType] = useState("expense");
 
   const expenseCategories = [
-  "🍔 Food",
-  "🛍️ Shopping",
-  "🚗 Transport",
-  "🎬 Entertainment",
-  "🗂️ Other"
-];
+    "🍔 Food",
+    "🛍️ Shopping",
+    "🚗 Transport",
+    "🎬 Entertainment",
+    "🗂️ Other"
+  ];
 
-const incomeCategories = [
-  "💰 Salary",
-  "🖋️ Freelance",
-  "📈 Investments",
-  "🎁 Gifts",
-  "🗂️ Other"
-];
+  const incomeCategories = [
+    "💰 Salary",
+    "🖋️ Freelance",
+    "📈 Investments",
+    "🎁 Gifts",
+    "🗂️ Other"
+  ];
 
   const fetchTransactions = async () => {
     try {
@@ -46,18 +87,12 @@ const incomeCategories = [
     if (!title || !amount) return;
 
     try {
-      await axios.post(API, {
-        title,
-        amount: +amount,
-        category,
-        type
-      });
-
+      await axios.post(API, { title, amount: +amount, category, type });
       setTitle("");
+      setFilteredTitles([]);
       setAmount("");
-      setCategory(type === "income" ? "Salary" : "Food");
+      setCategory(type === "income" ? "💰 Salary" : "🍔 Food");
       setType("expense");
-
       fetchTransactions();
     } catch (err) {
       console.error("POST error:", err);
@@ -71,6 +106,18 @@ const incomeCategories = [
     } catch (err) {
       console.error("DELETE error:", err);
     }
+  };
+
+  // Autocomplete filter for title
+  const handleTitleChange = (e) => {
+    const val = e.target.value;
+    setTitle(val);
+
+    const source = type === "income" ? incomeTitles : expenseTitles;
+    const filtered = source.filter((t) =>
+      t.toLowerCase().includes(val.toLowerCase())
+    ).slice(0, 10); // show top 10 suggestions
+    setFilteredTitles(filtered);
   };
 
   useEffect(() => {
@@ -116,30 +163,30 @@ const incomeCategories = [
       <h1>💰 Expense & Income Tracker</h1>
 
       {/* SUMMARY CARDS */}
-      <div className="grid summary">
-        <div className="card total-income">
+      <div className="grid summary" style={{ justifyContent: "center", gap: "1rem" }}>
+        <div className="card total-income glass">
           <h3>Total Income</h3>
           <h2>₹{totalIncome}</h2>
         </div>
-
-        <div className="card total-expense">
+        <div className="card total-expense glass">
           <h3>Total Expense</h3>
           <h2>₹{totalExpense}</h2>
         </div>
-
-        <div className="card balance">
+        <div className="card balance glass">
           <h3>Balance</h3>
           <h2>₹{balance}</h2>
         </div>
       </div>
 
       {/* ADD FORM */}
-      <form className="card form" onSubmit={addTransaction}>
+      <form className="card form glass" onSubmit={addTransaction}>
         <select
           value={type}
           onChange={(e) => {
             setType(e.target.value);
-            setCategory(e.target.value === "income" ? "Salary" : "Food");
+            setCategory(e.target.value === "income" ? "💰 Salary" : "🍔 Food");
+            setTitle("");
+            setFilteredTitles([]);
           }}
         >
           <option value="expense">Expense</option>
@@ -149,8 +196,14 @@ const incomeCategories = [
         <input
           placeholder="Title"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={handleTitleChange}
+          list="title-suggestions"
         />
+        <datalist id="title-suggestions">
+          {filteredTitles.map((t, i) => (
+            <option key={i} value={t} />
+          ))}
+        </datalist>
 
         <input
           type="number"
@@ -172,9 +225,8 @@ const incomeCategories = [
 
       {/* LIST + CHART */}
       <div className="grid transactions-chart">
-        <div className="card list">
+        <div className="card list glass">
           <h3>All Transactions</h3>
-
           {transactions.map((t) => (
             <div key={t._id} className="row">
               <span className={t.type}>{t.type.toUpperCase()}</span>
@@ -186,9 +238,8 @@ const incomeCategories = [
           ))}
         </div>
 
-        <div className="card chart">
+        <div className="card chart glass">
           <h3>Spending Breakdown</h3>
-
           {Object.keys(expenseTotals).length ? (
             <Doughnut data={chartData} />
           ) : (
