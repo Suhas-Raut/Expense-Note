@@ -7,7 +7,6 @@ import API_URL from "./api";
 
 const API = `${API_URL}/api/transactions`;
 
-
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function App() {
@@ -16,6 +15,22 @@ function App() {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("Food");
   const [type, setType] = useState("expense");
+
+  const expenseCategories = [
+  "🍔 Food",
+  "🛍️ Shopping",
+  "🚗 Transport",
+  "🎬 Entertainment",
+  "🗂️ Other"
+];
+
+const incomeCategories = [
+  "💰 Salary",
+  "🖋️ Freelance",
+  "📈 Investments",
+  "🎁 Gifts",
+  "🗂️ Other"
+];
 
   const fetchTransactions = async () => {
     try {
@@ -40,7 +55,7 @@ function App() {
 
       setTitle("");
       setAmount("");
-      setCategory("Food");
+      setCategory(type === "income" ? "Salary" : "Food");
       setType("expense");
 
       fetchTransactions();
@@ -120,7 +135,13 @@ function App() {
 
       {/* ADD FORM */}
       <form className="card form" onSubmit={addTransaction}>
-        <select value={type} onChange={(e) => setType(e.target.value)}>
+        <select
+          value={type}
+          onChange={(e) => {
+            setType(e.target.value);
+            setCategory(e.target.value === "income" ? "Salary" : "Food");
+          }}
+        >
           <option value="expense">Expense</option>
           <option value="income">Income</option>
         </select>
@@ -139,11 +160,9 @@ function App() {
         />
 
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option>Food</option>
-          <option>Shopping</option>
-          <option>Transport</option>
-          <option>Entertainment</option>
-          <option>Other</option>
+          {(type === "income" ? incomeCategories : expenseCategories).map((c) => (
+            <option key={c}>{c}</option>
+          ))}
         </select>
 
         <button className="add">
