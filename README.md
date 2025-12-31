@@ -19,7 +19,7 @@
 ## 🚀 Live Demo  
 
 <a href="https://expnote24.netlify.app/" target="_blank" rel="noreferrer">
-  <img src="https://github.com/Suhas-Raut/Expense-Note/blob/main/public/image.svg" alt="Live" width="180" height="150"/>
+  <img src="https://github.com/Suhas-Raut/Expense-Note/blob/main/frontend/public/image.svg" alt="Live" width="180" height="150"/>
 </a>  
 
 ---
@@ -93,8 +93,10 @@
 Expense-Note
 ├── backend
 │   ├── models
+│   │   ├── Expense.js
 │   │   └── Transaction.js
 │   ├── routes
+│   │   ├── expenses.js
 │   │   └── transactions.js
 │   └── server.js
 │
