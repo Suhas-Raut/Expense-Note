@@ -5,9 +5,10 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import API_URL from "./api";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
-
 const API = `${API_URL}/api/transactions`;
+
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 function App() {
   const [transactions, setTransactions] = useState([]);
