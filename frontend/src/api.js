@@ -1,6 +1,6 @@
 const API_URL =
   process.env.NODE_ENV === "production"
-    ? "https://your-backend.onrender.com"
+    ? "https://expense-note-ry4n.onrender.com"
     : "http://localhost:5000";
 
 export default API_URL;

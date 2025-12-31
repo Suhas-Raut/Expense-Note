@@ -3,15 +3,11 @@ import axios from "axios";
 import { FaTrash, FaPlus } from "react-icons/fa";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import API_URL from "./api";
+
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const API_BASE =
-  process.env.NODE_ENV === "production"
-    ? "https://YOUR-BACKEND-URL.onrender.com"  
-    : "http://localhost:5000";
-
-const API = `${API_BASE}/api/transactions`;
-
+const API = `${API_URL}/api/transactions`;
 
 function App() {
   const [transactions, setTransactions] = useState([]);
@@ -21,24 +17,44 @@ function App() {
   const [type, setType] = useState("expense");
 
   const fetchTransactions = async () => {
-    const res = await axios.get(API);
-    setTransactions(res.data);
+    try {
+      const res = await axios.get(API);
+      setTransactions(res.data);
+    } catch (err) {
+      console.error("GET error:", err);
+    }
   };
 
   const addTransaction = async (e) => {
     e.preventDefault();
     if (!title || !amount) return;
-    await axios.post(API, { title, amount: +amount, category, type });
-    setTitle("");
-    setAmount("");
-    setCategory("Food");
-    setType("expense");
-    fetchTransactions();
+
+    try {
+      await axios.post(API, {
+        title,
+        amount: +amount,
+        category,
+        type
+      });
+
+      setTitle("");
+      setAmount("");
+      setCategory("Food");
+      setType("expense");
+
+      fetchTransactions();
+    } catch (err) {
+      console.error("POST error:", err);
+    }
   };
 
   const deleteTransaction = async (id) => {
-    await axios.delete(`${API}/${id}`);
-    fetchTransactions();
+    try {
+      await axios.delete(`${API}/${id}`);
+      setTransactions((prev) => prev.filter((t) => t._id !== id));
+    } catch (err) {
+      console.error("DELETE error:", err);
+    }
   };
 
   useEffect(() => {
@@ -89,10 +105,12 @@ function App() {
           <h3>Total Income</h3>
           <h2>₹{totalIncome}</h2>
         </div>
+
         <div className="card total-expense">
           <h3>Total Expense</h3>
           <h2>₹{totalExpense}</h2>
         </div>
+
         <div className="card balance">
           <h3>Balance</h3>
           <h2>₹{balance}</h2>
@@ -132,10 +150,11 @@ function App() {
         </button>
       </form>
 
-      {/* LIST + CHART SIDE BY SIDE */}
+      {/* LIST + CHART */}
       <div className="grid transactions-chart">
         <div className="card list">
           <h3>All Transactions</h3>
+
           {transactions.map((t) => (
             <div key={t._id} className="row">
               <span className={t.type}>{t.type.toUpperCase()}</span>
@@ -149,6 +168,7 @@ function App() {
 
         <div className="card chart">
           <h3>Spending Breakdown</h3>
+
           {Object.keys(expenseTotals).length ? (
             <Doughnut data={chartData} />
           ) : (
